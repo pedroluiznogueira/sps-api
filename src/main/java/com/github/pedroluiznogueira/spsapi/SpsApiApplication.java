@@ -10,5 +10,4 @@ public class SpsApiApplication {
 		SpringApplication.run(SpsApiApplication.class, args);
 		System.out.println("Running...");
 	}
-
 }
