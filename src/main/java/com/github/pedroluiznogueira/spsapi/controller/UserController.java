@@ -15,6 +15,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -40,7 +41,7 @@ public class UserController {
     @PostMapping("/insert")
     public User insert(@RequestBody User user) throws InterruptedException {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        Thread.sleep(10000);
+        Thread.sleep(3000);
         return userRepository.insert(user);
     }
 
@@ -59,13 +60,18 @@ public class UserController {
 
         // generate token and set's it in a data transfer object
         String token = tokenService.generateToken(authentication);
-        Thread.sleep(10000);
+        Thread.sleep(3000);
         return ResponseEntity.ok(TokenDto.builder().type("Bearer").token(token).build());
     }
 
-    @GetMapping("/find/user/{name}")
+    @GetMapping("/find/user/name/{name}")
     public User findUserByName(@PathVariable ("name") String name) {
         return userRepository.findUserByName(name);
+    }
+
+    @GetMapping("/find/user/email/{email}")
+    public User findUserByEmail(@PathVariable ("email") String email) {
+        return userRepository.findUserByEmail(email);
     }
 
     @GetMapping("/find/all/repos/{name}")
@@ -78,6 +84,9 @@ public class UserController {
     public User insertRepo(@RequestBody Repo repo) {
         User user = userRepository.findUserByName(repo.getUserName());
         List<Repo> listToInsertIn = user.getRepos();
+        for (Repo r: listToInsertIn) {
+            if (repo.getName().equals(r.getName())) throw new IllegalArgumentException("repo already exists");
+        }
         listToInsertIn.add(repo);
         user.setRepos(listToInsertIn);
         userRepository.save(user);
@@ -92,5 +101,27 @@ public class UserController {
         user.setRepos(listToDeleteFrom);
         userRepository.save(user);
         return user;
+    }
+
+    @GetMapping("/find/repo/from/user/{username}/by/name/{name}")
+    public Repo findRepoByName(
+            @PathVariable ("username") String username,
+            @PathVariable ("name") String name) throws InterruptedException {
+        Thread.sleep(3000);
+        User user = userRepository.findUserByName(username);
+        List<Repo> listToSearchOn = user.getRepos();
+
+        List<String> reposNames = new ArrayList<>();
+        for (Repo repo: listToSearchOn) {
+            reposNames.add(repo.getName());
+        }
+        Integer repoIndex = 0;
+        for (String repoName: reposNames) {
+            if (repoName.equals(name)) {
+                repoIndex = reposNames.indexOf(repoName);
+                return listToSearchOn.get(repoIndex);
+            }
+        }
+        throw new IllegalArgumentException("couldn't find repo");
     }
 }
