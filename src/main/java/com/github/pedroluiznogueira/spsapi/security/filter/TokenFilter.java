@@ -43,7 +43,7 @@ public class TokenFilter extends OncePerRequestFilter {
 
     private void authenticate(String tokenFromHeader) {
         // access the id of the token's user
-        String id = tokenService.getTokenId(tokenFromHeader);
+        Integer id = tokenService.getTokenId(tokenFromHeader);
 
         Optional<User> optionalUser = userRepository.findById(id);
 
