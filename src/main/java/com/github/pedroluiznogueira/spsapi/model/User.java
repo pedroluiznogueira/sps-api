@@ -1,24 +1,22 @@
 package com.github.pedroluiznogueira.spsapi.model;
 
 import lombok.Data;
+import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+import java.util.List;
 
 @Data
+@Document
 public class User implements UserDetails {
 
     private String id;
     private String name;
     private String email;
     private String password;
-
-    public User(String name, String email, String password) {
-        this.name = name;
-        this.email = email;
-        this.password = password;
-    }
+    private List<Repo> repos;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
