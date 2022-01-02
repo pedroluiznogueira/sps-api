@@ -39,7 +39,7 @@ public class AuthManager extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .antMatchers("/users/insert").permitAll()
+                .antMatchers("/users/register").permitAll()
                 .antMatchers("/users/auth").permitAll()
                 .anyRequest().authenticated()
                 .and().csrf().disable()

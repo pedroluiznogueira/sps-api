@@ -1,21 +1,27 @@
 package com.github.pedroluiznogueira.spsapi.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
-import org.springframework.data.mongodb.core.mapping.Document;
+import lombok.Value;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import javax.persistence.*;
 import java.util.Collection;
 import java.util.List;
 
 @Data
-@Document
+@Entity
 public class User implements UserDetails {
 
-    private String id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
     private String name;
     private String email;
     private String password;
+    @JsonIgnore
+    @OneToMany(mappedBy = "user")
     private List<Repo> repos;
 
     @Override

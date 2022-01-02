@@ -46,9 +46,9 @@ public class TokenService {
     }
 
     // will be used when we need to authenticate a given token
-    public String getTokenId(String token) {
+    public Integer getTokenId(String token) {
         Claims body = Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody();
-        return body.getSubject();
+        return Integer.valueOf(body.getSubject());
     }
 
 }
