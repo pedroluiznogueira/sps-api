@@ -5,8 +5,8 @@ import lombok.Data;
 @Data
 public class Repo {
 
-    private String repoName;
-    private String repoOwner;
-    private String repoUrl;
+    private String name;
+    private String owner;
+    private String url;
     private String userName;
 }

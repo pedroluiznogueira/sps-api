@@ -19,6 +19,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/users")
+@CrossOrigin("*")
 public class UserController {
 
     @Autowired
@@ -37,13 +38,14 @@ public class UserController {
     private PasswordEncoder passwordEncoder;
 
     @PostMapping("/insert")
-    public User insert(@RequestBody User user) {
+    public User insert(@RequestBody User user) throws InterruptedException {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
+        Thread.sleep(10000);
         return userRepository.insert(user);
     }
 
     @PostMapping("/auth")
-    public ResponseEntity<TokenDto> auth(@RequestBody UserDto user) {
+    public ResponseEntity<TokenDto> auth(@RequestBody UserDto user) throws InterruptedException {
         // generate a token with user login info to deliver to token service
         UsernamePasswordAuthenticationToken loginCredentials
                 = new UsernamePasswordAuthenticationToken(
@@ -57,6 +59,7 @@ public class UserController {
 
         // generate token and set's it in a data transfer object
         String token = tokenService.generateToken(authentication);
+        Thread.sleep(10000);
         return ResponseEntity.ok(TokenDto.builder().type("Bearer").token(token).build());
     }
 
